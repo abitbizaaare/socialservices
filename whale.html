@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Orange County Life Navigator (Whale / Coltrane Loop)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      margin: 0;
+      background: #020617;
+      color: #e5e7eb;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #111827;
+      background: radial-gradient(circle at top, #1f2937, #020617);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    header p {
+      margin: 0.4rem 0 0;
+      font-size: 0.85rem;
+      color: #9ca3af;
+      max-width: 44rem;
+    }
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 2.3fr);
+      gap: 1rem;
+      padding: 1rem 1.5rem 1.5rem;
+    }
+    @media (max-width: 1000px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      border: 1px solid #1f2937;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+    #canvasContainer {
+      position: relative;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      border: 1px solid #111827;
+      background: #020617;
+      margin-bottom: 0.8rem;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .loop-header {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #9ca3af;
+      margin-bottom: 0.4rem;
+    }
+    .loop-phrase {
+      font-size: 0.9rem;
+      color: #e5e7eb;
+      min-height: 2.4rem;
+    }
+    .loop-meter {
+      margin-top: 0.75rem;
+      height: 4px;
+      border-radius: 999px;
+      background: #020617;
+      overflow: hidden;
+      position: relative;
+    }
+    .loop-meter-inner {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, #22c55e, #0ea5e9);
+      transform-origin: left;
+      transform: scaleX(0.2);
+      transition: transform 800ms ease-in-out;
+    }
+    .swatch-row {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+    .swatch {
+      flex: 1;
+      height: 1.2rem;
+      border-radius: 999px;
+      border: 1px solid #020617;
+    }
+    label {
+      display: block;
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+      color: #d1d5db;
+    }
+    select, textarea, button {
+      margin-top: 0.35rem;
+      width: 100%;
+      padding: 0.55rem 0.7rem;
+      border-radius: 0.5rem;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #f9fafb;
+      font-size: 0.95rem;
+    }
+    textarea {
+      min-height: 3.5rem;
+      resize: vertical;
+    }
+    button {
+      margin-top: 0.9rem;
+      background: linear-gradient(135deg, #22c55e, #0ea5e9);
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    button:hover {
+      filter: brightness(1.08);
+    }
+    .results-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.75rem 0 0;
+    }
+    .results-list li {
+      padding: 0.6rem 0.4rem;
+      border-bottom: 1px solid #111827;
+    }
+    .results-list li:last-child {
+      border-bottom: none;
+    }
+    .tag {
+      display: inline-block;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(56, 189, 248, 0.12);
+      color: #7dd3fc;
+      margin-right: 0.4rem;
+    }
+    .res-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .res-meta {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    .res-link a {
+      color: #22c55e;
+      font-size: 0.85rem;
+      text-decoration: none;
+    }
+    .res-link a:hover {
+      text-decoration: underline;
+    }
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #9ca3af;
+      margin-bottom: 0.2rem;
+    }
+    footer {
+      padding: 0.6rem 1.5rem 0.9rem;
+      font-size: 0.75rem;
+      color: #6b7280;
+      border-top: 1px solid #111827;
+      background: #020617;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Orange County Life Navigator</h1>
+    <p>
+      A persistent, whale‑minded, modal‑jazz loop that helps you find social services and work,
+      inside a calming color field.
+    </p>
+  </header>
+
+  <main>
+    <!-- LEFT: Regulating color field + internal loop info -->
+    <section>
+      <div class="card" id="canvasContainer">
+        <canvas id="field"></canvas>
+      </div>
+
+      <div class="card">
+        <h2>Internal loop</h2>
+        <div class="loop-header">Guiding phrase</div>
+        <div id="loopPhrase" class="loop-phrase">
+          Inhale, exhale: the colors move, but the world stays safe.
+        </div>
+        <div class="loop-meter">
+          <div id="loopMeterInner" class="loop-meter-inner"></div>
+        </div>
+
+        <p style="margin-top:0.9rem;font-size:0.8rem;color:#9ca3af;">
+          The background field stays mostly in blue‑green tones, with slow, sine‑wave shifts in hue,
+          saturation, and lightness—like breathing with a whale pod. No jumps, no shocks, just continuous
+          modulation while you navigate life decisions.
+        </p>
+
+        <div class="loop-header" style="margin-top:1rem;">Current palette snapshot</div>
+        <div class="swatch-row">
+          <div id="swatch1" class="swatch"></div>
+          <div id="swatch2" class="swatch"></div>
+          <div id="swatch3" class="swatch"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Social services + work navigators -->
+    <section class="card">
+      <div class="section-title">Social services</div>
+      <h2>Stability & support navigator</h2>
+
+      <label for="citySocial">City in Orange County</label>
+      <select id="citySocial">
+        <option value="">Select a city…</option>
+        <option>Santa Ana</option>
+        <option>Anaheim</option>
+        <option>Garden Grove</option>
+        <option>Fullerton</option>
+        <option>Orange</option>
+        <option>La Habra</option>
+        <option>Westminster</option>
+        <option>Buena Park</option>
+        <option>Other / Nearby</option>
+      </select>
+
+      <label for="needSocial">What do you need most right now?</label>
+      <select id="needSocial">
+        <option value="">Choose a focus…</option>
+        <option value="food">Food / EBT / basic needs</option>
+        <option value="youth">Youth / after-school / safe spaces</option>
+        <option value="health">Healthcare / mental health</option>
+        <option value="housing">Housing / shelter / stability</option>
+        <option value="legal">Legal / tenant / immigration help</option>
+      </select>
+
+      <label for="storySocial">Tell your situation (optional)</label>
+      <textarea id="storySocial" placeholder="Example: I’m in Santa Ana with two kids, need help with food and after-school care."></textarea>
+
+      <button id="findSocialBtn">Find social services</button>
+
+      <ul id="resultsSocial" class="results-list"></ul>
+
+      <hr style="margin:1.2rem 0;border-color:#111827;border-style:solid;border-width:0 0 1px;" />
+
+      <div class="section-title">Work & income</div>
+      <h2>Work & skills navigator</h2>
+
+      <label for="cityWork">City in Orange County</label>
+      <select id="cityWork">
+        <option value="">Select a city…</option>
+        <option>Santa Ana</option>
+        <option>Anaheim</option>
+        <option>Garden Grove</option>
+        <option>Fullerton</option>
+        <option>Orange</option>
+        <option>La Habra</option>
+        <option>Westminster</option>
+        <option>Buena Park</option>
+        <option>Other / Nearby</option>
+      </select>
+
+      <label for="goalWork">What’s your main goal right now?</label>
+      <select id="goalWork">
+        <option value="">Choose a focus…</option>
+        <option value="first-job">First job / entry-level work</option>
+        <option value="better-job">Better job / higher pay</option>
+        <option value="skills">Learn a new skill or trade</option>
+        <option value="youth">Youth jobs / internships</option>
+        <option value="career-change">Career change / new field</option>
+        <option value="support">Help with resumes, interviews, or applications</option>
+      </select>
+
+      <label for="storyWork">Tell your situation (optional)</label>
+      <textarea id="storyWork" placeholder="Example: I’m in La Habra, no car, looking for my first job and maybe training."></textarea>
+
+      <button id="findWorkBtn">Find work resources</button>
+
+      <ul id="resultsWork" class="results-list"></ul>
+    </section>
+  </main>
+
+  <footer>
+    Conceptual prototype. For emergencies, contact 911. For immediate crisis or mental health support in Orange County, call 988 or local crisis hotlines.
+  </footer>
+
+  <script>
+    // --- REGULATING COLOR FIELD (whale / Coltrane loop) ---
+    const canvas = document.getElementById("field");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    let t = 0;
+    const baseHue = 200; // blue‑green "home key"
+    const timeScale = 0.00012; // slow, breathing‑like tempo
+
+    const loopPhraseEl = document.getElementById("loopPhrase");
+    const loopMeterInner = document.getElementById("loopMeterInner");
+    const swatch1 = document.getElementById("swatch1");
+    const swatch2 = document.getElementById("swatch2");
+    const swatch3 = document.getElementById("swatch3");
+
+    const phrases = [
+      "Inhale, exhale: the colors move, but the world stays safe.",
+      "Like waves on a quiet shore, nothing rushes, nothing demands.",
+      "We stay in one ocean of color, just shifting currents.",
+      "The changes are gentle enough that your body can predict them.",
+      "You don’t have to watch closely. Your nervous system will still notice.",
+      "The loop doesn’t end; it just keeps breathing with you."
+    ];
+    let phraseIndex = 0;
+    let lastPhraseChange = 0;
+
+    function hsl(h, s, l) {
+      return `hsl(${h}, ${s}%, ${l}%)`;
+    }
+
+    function drawFrame(timestamp) {
+      const w = canvas.width;
+      const h = canvas.height;
+      if (!w || !h) {
+        requestAnimationFrame(drawFrame);
+        return;
+      }
+
+      t += timeScale * (w + h);
+
+      const hueBand = 14;
+      const hueOffset1 = hueBand * Math.sin(t * 0.35);
+      const hueOffset2 = hueBand * 0.6 * Math.sin(t * 0.21 + 1.1);
+
+      const satBase = 45 + 8 * Math.sin(t * 0.18); // 37–53%
+      const lightBase = 35 + 8 * Math.sin(t * 0.14 + 0.7); // 27–43%
+
+      const rows = 40;
+      const cols = 60;
+      const cellW = w / cols;
+      const cellH = h / rows;
+
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const nx = x / cols;
+          const ny = y / rows;
+
+          const spatialWave =
+            0.7 * Math.sin(nx * Math.PI * 2 + t * 0.22) +
+            0.7 * Math.sin(ny * Math.PI * 2 + t * 0.19);
+
+          const localHue =
+            baseHue +
+            hueOffset1 * (nx - 0.5) +
+            hueOffset2 * (ny - 0.5) +
+            4 * spatialWave;
+
+          const localSat = satBase + 6 * spatialWave;
+          const localLight = lightBase + 6 * Math.sin((nx + ny) * Math.PI + t * 0.16);
+
+          const hue = Math.round((localHue + 360) % 360);
+          const sat = Math.round(Math.max(30, Math.min(60, localSat)));
+          const light = Math.round(Math.max(25, Math.min(50, localLight)));
+
+          ctx.fillStyle = hsl(hue, sat, light);
+          ctx.fillRect(x * cellW, y * cellH, cellW + 1, cellH + 1);
+        }
+      }
+
+      const meterScale = 0.3 + 0.5 * (0.5 + 0.5 * Math.sin(t * 0.4));
+      loopMeterInner.style.transform = `scaleX(${meterScale.toFixed(2)})`;
+
+      if (timestamp - lastPhraseChange > 8000) {
+        lastPhraseChange = timestamp;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        loopPhraseEl.textContent = phrases[phraseIndex];
+      }
+
+      const samplePoints = [
+        { x: 0.2, y: 0.3 },
+        { x: 0.5, y: 0.6 },
+        { x: 0.8, y: 0.4 }
+      ];
+      const swatches = [swatch1, swatch2, swatch3];
+
+      samplePoints.forEach((p, i) => {
+        const nx = p.x;
+        const ny = p.y;
+        const spatialWave =
+          0.7 * Math.sin(nx * Math.PI * 2 + t * 0.22) +
+          0.7 * Math.sin(ny * Math.PI * 2 + t * 0.19);
+
+        const localHue =
+          baseHue +
+          hueOffset1 * (nx - 0.5) +
+          hueOffset2 * (ny - 0.5) +
+          4 * spatialWave;
+
+        const localSat = satBase + 6 * spatialWave;
+        const localLight = lightBase + 6 * Math.sin((nx + ny) * Math.PI + t * 0.16);
+
+        const hue = Math.round((localHue + 360) % 360);
+        const sat = Math.round(Math.max(30, Math.min(60, localSat)));
+        const light = Math.round(Math.max(25, Math.min(50, localLight)));
+
+        const color = hsl(hue, sat, light);
+        swatches[i].style.background = color;
+      });
+
+      requestAnimationFrame(drawFrame);
+    }
+
+    requestAnimationFrame(drawFrame);
+
+    // --- SOCIAL SERVICES RESOURCES ---
+    const socialResources = [
+      {
+        tags: ["Food", "EBT"],
+        cities: ["Santa Ana", "Anaheim", "Garden Grove", "Fullerton", "Orange", "La Habra", "Westminster", "Buena Park", "Other / Nearby"],
+        need: "food",
+        title: "CalFresh / EBT – Orange County Social Services",
+        meta: "Apply for monthly food benefits. Online, phone, or in-person support.",
+        url: "https://www.mybenefitscalwin.org/"
+      },
+      {
+        tags: ["Food", "Community"],
+        cities: ["Santa Ana"],
+        need: "food",
+        title: "Santa Ana Food Assistance & Food Banks",
+        meta: "Local food pantries and community food distribution in Santa Ana.",
+        url: "https://www.santa-ana.org"
+      },
+      {
+        tags: ["Youth", "After-school"],
+        cities: ["Santa Ana", "Garden Grove", "Anaheim", "Fullerton", "Orange"],
+        need: "youth",
+        title: "Boys & Girls Clubs / Youth Centers (OC)",
+        meta: "Safe after-school spaces, homework help, and activities for kids and teens.",
+        url: "https://www.bgc.org"
+      },
+      {
+        tags: ["Health", "Children"],
+        cities: ["Santa Ana", "Orange", "Anaheim", "Other / Nearby"],
+        need: "health",
+        title: "CHOC – Children’s Health of Orange County",
+        meta: "Pediatric care, mental health services, and family support resources.",
+        url: "https://www.choc.org"
+      },
+      {
+        tags: ["Housing", "Shelter"],
+        cities: ["Santa Ana", "Anaheim", "Garden Grove", "Fullerton", "Orange", "Other / Nearby"],
+        need: "housing",
+        title: "Orange County 2-1-1 – Housing & Shelter",
+        meta: "Central line for shelter, housing programs, and emergency assistance.",
+        url: "https://www.211oc.org"
+      },
+      {
+        tags: ["Legal", "Tenant"],
+        cities: ["Santa Ana", "Anaheim", "Garden Grove", "Fullerton", "Orange", "Other / Nearby"],
+        need: "legal",
+        title: "Legal Aid Society of Orange County",
+        meta: "Help with housing, benefits, consumer issues, and more for low-income residents.",
+        url: "https://www.legal-aid.com"
+      }
+    ];
+
+    const citySocialEl = document.getElementById("citySocial");
+    const needSocialEl = document.getElementById("needSocial");
+    const storySocialEl = document.getElementById("storySocial");
+    const resultsSocialEl = document.getElementById("resultsSocial");
+    const findSocialBtn = document.getElementById("findSocialBtn");
+
+    function renderList(targetEl, matches, contextNote, emptyMessage) {
+      targetEl.innerHTML = "";
+      if (!matches.length) {
+        const li = document.createElement("li");
+        li.textContent = emptyMessage;
+        targetEl.appendChild(li);
+        return;
+      }
+
+      if (contextNote) {
+        const liNote = document.createElement("li");
+        liNote.style.fontSize = "0.8rem";
+        liNote.style.color = "#9ca3af";
+        liNote.textContent = contextNote;
+        targetEl.appendChild(liNote);
+      }
+
+      matches.forEach(r => {
+        const li = document.createElement("li");
+
+        const tagsSpan = document.createElement("div");
+        r.tags.forEach(t => {
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = t;
+          tagsSpan.appendChild(tag);
+        });
+
+        const titleDiv = document.createElement("div");
+        titleDiv.className = "res-title";
+        titleDiv.textContent = r.title;
+
+        const metaDiv = document.createElement("div");
+        metaDiv.className = "res-meta";
+        metaDiv.textContent = r.meta;
+
+        const linkDiv = document.createElement("div");
+        linkDiv.className = "res-link";
+        const a = document.createElement("a");
+        a.href = r.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = "Open website";
+        linkDiv.appendChild(a);
+
+        li.appendChild(tagsSpan);
+        li.appendChild(titleDiv);
+        li.appendChild(metaDiv);
+        li.appendChild(linkDiv);
+
+        targetEl.appendChild(li);
+      });
+    }
+
+    findSocialBtn.addEventListener("click", () => {
+      const city = citySocialEl.value;
+      const need = needSocialEl.value;
+      const story = storySocialEl.value.trim();
+
+      loopPhraseEl.textContent = "Okay. Let’s circle the supports that can hold you right now.";
+      const matches = socialResources.filter(r => {
+        const cityMatch = !city || r.cities.includes(city);
+        const needMatch = !need || r.need === need;
+        return cityMatch && needMatch;
+      });
+
+      let contextNote = "";
+      if (story) {
+        contextNote = "Based on what you shared, these are starting points. A live navigator or caseworker can go deeper with you.";
+      }
+
+      renderList(
+        resultsSocialEl,
+        matches,
+        contextNote,
+        "No direct matches found. Try a different need or city, or contact 2-1-1 for live help."
+      );
+    });
+
+    // --- WORK RESOURCES ---
+    const workResources = [
+      {
+        tags: ["Jobs", "Training"],
+        cities: ["Santa Ana", "Anaheim", "Garden Grove", "Fullerton", "Orange", "La Habra", "Westminster", "Buena Park", "Other / Nearby"],
+        goals: ["first-job", "better-job", "skills", "career-change", "support"],
+        title: "OC One-Stop Centers – Job & Career Services",
+        meta: "Help with job search, training programs, resumes, and career planning for adults and youth.",
+        url: "https://www.oconestop.com"
+      },
+      {
+        tags: ["Youth", "Jobs"],
+        cities: ["Santa Ana", "Anaheim", "Garden Grove", "Fullerton", "Orange", "Other / Nearby"],
+        goals: ["youth", "first-job"],
+        title: "Youth Employment Programs – Orange County",
+        meta: "Paid work experience, internships, and job readiness programs for teens and young adults.",
+        url: "https://www.oconestop.com/youth"
+      },
+      {
+        tags: ["Training", "Trades"],
+        cities: ["Santa Ana", "Anaheim", "Garden Grove", "Fullerton", "Orange", "Other / Nearby"],
+        goals: ["skills", "career-change", "better-job"],
+        title: "Community College Career Education (OC Colleges)",
+        meta: "Short-term certificates and training in trades, healthcare, IT, and more.",
+        url: "https://www.cccco.edu/students-and-parents/explore-career-education"
+      },
+      {
+        tags: ["Support", "Resumes"],
+        cities: ["Santa Ana", "Anaheim", "Garden Grove", "Fullerton", "Orange", "La Habra", "Buena Park", "Westminster", "Other / Nearby"],
+        goals: ["support", "first-job", "better-job"],
+        title: "Local Libraries – Job & Computer Help",
+        meta: "Many OC libraries offer resume help, computer access, and basic digital skills support.",
+        url: "https://ocpl.org"
+      },
+      {
+        tags: ["Jobs", "Entry-level"],
+        cities: ["Santa Ana", "Anaheim", "Garden Grove", "Fullerton", "Orange", "La Habra", "Buena Park", "Westminster", "Other / Nearby"],
+        goals: ["first-job"],
+        title: "Entry-Level Job Boards (CalJOBS, etc.)",
+        meta: "Search for part-time, entry-level, and no-experience-required jobs near you.",
+        url: "https://www.caljobs.ca.gov"
+      },
+      {
+        tags: ["Career Change", "Guidance"],
+        cities: ["Other / Nearby", "Santa Ana", "Anaheim", "Fullerton", "Orange"],
+        goals: ["career-change", "better-job", "skills"],
+        title: "Career Counseling & Planning – OC One-Stop / Colleges",
+        meta: "Talk with a counselor about changing fields, choosing programs, and long-term planning.",
+        url: "https://www.oconestop.com"
+      }
+    ];
+
+    const cityWorkEl = document.getElementById("cityWork");
+    const goalWorkEl = document.getElementById("goalWork");
+    const storyWorkEl = document.getElementById("storyWork");
+    const resultsWorkEl = document.getElementById("resultsWork");
+    const findWorkBtn = document.getElementById("findWorkBtn");
+
+    findWorkBtn.addEventListener("click", () => {
+      const city = cityWorkEl.value;
+      const goal = goalWorkEl.value;
+      const story = storyWorkEl.value.trim();
+
+      loopPhraseEl.textContent = "Let’s find work that fits your life, not just your resume.";
+      const matches = workResources.filter(r => {
+        const cityMatch = !city || r.cities.includes(city);
+        const goalMatch = !goal || r.goals.includes(goal);
+        return cityMatch && goalMatch;
+      });
+
+      let contextNote = "";
+      if (story) {
+        contextNote = "Based on what you shared, these are starting points. A live counselor or navigator can go deeper with you.";
+      }
+
+      renderList(
+        resultsWorkEl,
+        matches,
+        contextNote,
+        "No direct matches found. Try a different goal or city, or visit OC One-Stop for live help."
+      );
+    });
+  </script>
+</body>
+</html>
