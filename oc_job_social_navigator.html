@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Orange County Job + Social Services Navigator</title>
+  <style>
+    :root {
+      --bg: #000;
+      --panel: #050505;
+      --panel-2: #0a0a0a;
+      --text: #fff;
+      --muted: #b8b8b8;
+      --soft: #8a8a8a;
+      --line: #262626;
+      --line-strong: #3a3a3a;
+      --input: #080808;
+      --good: #f5f5f5;
+      --shadow: 0 24px 90px rgba(255,255,255,.045);
+      --radius: 18px;
+      --radius-sm: 10px;
+      --mono: Consolas, "Courier New", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 10% -10%, rgba(255,255,255,.10), transparent 30rem),
+        linear-gradient(180deg, #0b0b0b 0%, #000 40%, #000 100%);
+      color: var(--text);
+      font-family: var(--mono);
+      min-height: 100vh;
+      letter-spacing: -.01em;
+    }
+
+    a { color: var(--text); }
+
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: 1rem;
+      background: #fff;
+      color: #000;
+      padding: .75rem 1rem;
+      border-radius: 999px;
+      z-index: 10;
+    }
+    .skip-link:focus { left: 1rem; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: rgba(0,0,0,.88);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 1rem clamp(1rem, 2vw, 1.5rem);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 2.6rem;
+      height: 2.6rem;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #000;
+      background: #fff;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      text-transform: uppercase;
+      letter-spacing: .045em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand p {
+      margin: .15rem 0 0;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    nav {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      justify-content: end;
+    }
+
+    .nav-btn, button, .ghost-link {
+      font-family: var(--mono);
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      color: #000;
+      border-radius: 999px;
+      padding: .7rem .95rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .16s ease, background .16s ease, color .16s ease, border-color .16s ease;
+    }
+
+    .nav-btn.secondary, .ghost-link {
+      background: transparent;
+      color: #fff;
+    }
+
+    .nav-btn:hover, button:hover, .ghost-link:hover { transform: translateY(-1px); }
+    .nav-btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
+
+    main {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+      gap: 1rem;
+      align-items: stretch;
+      margin: 1rem 0;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: clamp(1rem, 2vw, 1.3rem);
+    }
+
+    .hero-copy {
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-size: .78rem;
+      margin-bottom: .9rem;
+    }
+
+    .hero h2 {
+      font-size: clamp(2rem, 6vw, 4.8rem);
+      line-height: .96;
+      margin: 0 0 1rem;
+      letter-spacing: -.08em;
+      max-width: 11ch;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 67ch;
+      line-height: 1.65;
+      margin-bottom: 1rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: .7rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .7rem;
+      margin-top: 1.2rem;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: .85rem;
+      background: rgba(0,0,0,.28);
+    }
+
+    .stat b { display: block; font-size: 1.35rem; }
+    .stat span { color: var(--muted); font-size: .75rem; }
+
+    .terminal {
+      min-height: 340px;
+      background: #000;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      padding: 1rem;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .terminal::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.035) 1px, transparent 1px, transparent 4px);
+      opacity: .24;
+      pointer-events: none;
+    }
+
+    .terminal-line {
+      position: relative;
+      color: #fff;
+      font-size: .86rem;
+      line-height: 1.75;
+      white-space: pre-wrap;
+    }
+
+    .prompt { color: #fff; font-weight: 800; }
+    .dim { color: var(--soft); }
+
+    .search-shell {
+      margin: 1rem 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(160px, .45fr) minmax(160px, .45fr) auto;
+      gap: .7rem;
+      align-items: end;
+    }
+
+    label { display: block; color: var(--muted); font-size: .78rem; margin-bottom: .35rem; }
+
+    input, select, textarea {
+      width: 100%;
+      font-family: var(--mono);
+      color: #fff;
+      background: var(--input);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      padding: .82rem .9rem;
+      min-height: 46px;
+    }
+
+    input::placeholder, textarea::placeholder { color: #737373; }
+    textarea { min-height: 108px; resize: vertical; line-height: 1.55; }
+
+    .tabs {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin: 1.2rem 0 1rem;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: .8rem;
+    }
+
+    .tab {
+      background: transparent;
+      color: #fff;
+      border: 1px solid var(--line-strong);
+      padding: .72rem 1rem;
+    }
+
+    .tab[aria-selected="true"] {
+      background: #fff;
+      color: #000;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 340px minmax(0, 1fr);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .filters {
+      position: sticky;
+      top: 95px;
+    }
+
+    .filters h2, .results h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: .09em; }
+
+    .field { margin-bottom: .85rem; }
+
+    .mini-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .6rem;
+      margin-top: .7rem;
+    }
+
+    .mini-actions button { padding: .68rem .8rem; }
+
+    .chip-row {
+      display: flex;
+      gap: .45rem;
+      flex-wrap: wrap;
+      margin-top: .8rem;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: .35rem .55rem;
+      color: var(--muted);
+      font-size: .72rem;
+      background: rgba(255,255,255,.025);
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: .8rem;
+    }
+
+    .results-header p { margin: 0; color: var(--muted); font-size: .85rem; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .8rem;
+    }
+
+    .result-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.42);
+      padding: 1rem;
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .result-card.featured {
+      border-color: #fff;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: .8rem;
+      align-items: start;
+    }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: .35rem; }
+
+    .tag {
+      border: 1px solid var(--line-strong);
+      color: #fff;
+      background: #0a0a0a;
+      border-radius: 999px;
+      font-size: .68rem;
+      padding: .25rem .45rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .score {
+      background: #fff;
+      color: #000;
+      border-radius: 999px;
+      padding: .28rem .5rem;
+      font-size: .72rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .result-card h3 {
+      margin: 0;
+      font-size: 1.03rem;
+      line-height: 1.35;
+    }
+
+    .meta, .details, .steps {
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+
+    .steps {
+      border-top: 1px solid var(--line);
+      padding-top: .75rem;
+      margin-top: auto;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: .55rem;
+      flex-wrap: wrap;
+      margin-top: .2rem;
+    }
+
+    .card-actions a, .card-actions button {
+      flex: 1 1 auto;
+      text-align: center;
+      font-size: .78rem;
+      padding: .62rem .72rem;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      text-decoration: none;
+      font-weight: 800;
+      color: #000;
+      background: #fff;
+    }
+
+    .card-actions .outline {
+      color: #fff;
+      background: transparent;
+    }
+
+    .empty {
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      color: var(--muted);
+      grid-column: 1 / -1;
+      line-height: 1.55;
+    }
+
+    .planner {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1rem;
+    }
+
+    .checklist label {
+      color: var(--text);
+      display: flex;
+      gap: .6rem;
+      align-items: start;
+      padding: .62rem 0;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+      font-size: .86rem;
+    }
+
+    .checklist input { width: auto; min-height: auto; margin-top: .15rem; accent-color: #fff; }
+
+    .note-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: .8rem;
+      background: rgba(255,255,255,.025);
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+
+    .hidden { display: none !important; }
+
+    footer {
+      max-width: 1220px;
+      margin: 1.5rem auto 0;
+      padding: 1rem clamp(1rem, 2vw, 1.5rem) 2rem;
+      color: var(--soft);
+      font-size: .76rem;
+      line-height: 1.55;
+      border-top: 1px solid var(--line);
+    }
+
+    @media (max-width: 980px) {
+      .topbar, .hero, .workspace, .planner { grid-template-columns: 1fr; }
+      nav { justify-content: start; }
+      .filters { position: static; }
+      .search-shell { grid-template-columns: 1fr 1fr; }
+      .cards { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .status-grid, .search-shell, .mini-actions { grid-template-columns: 1fr; }
+      .hero-copy, .terminal { min-height: auto; }
+      h1 { white-space: normal; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#resultsTitle">Skip to results</a>
+
+  <header>
+    <div class="topbar">
+      <div class="brand" aria-label="Site identity">
+        <div class="mark">OC</div>
+        <div>
+          <h1>Job + Social Services Navigator</h1>
+          <p>Consolas on black. Human help, cleaner search, fewer distractions.</p>
+        </div>
+      </div>
+      <nav aria-label="Primary navigation">
+        <a class="nav-btn" href="#navigator">Start search</a>
+        <a class="nav-btn secondary" href="#planner">Action plan</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="panel hero-copy">
+        <div>
+          <div class="eyebrow">Orange County / work first / support always</div>
+          <h2 id="heroTitle">Find the next right door.</h2>
+          <p>
+            Search job centers, training paths, resume support, food help, housing navigation, healthcare, legal aid, youth programs, and live helplines from one calmer interface.
+          </p>
+          <div class="hero-actions">
+            <a class="ghost-link" href="#navigator">Search resources</a>
+            <a class="ghost-link" href="https://www.211oc.org" target="_blank" rel="noopener noreferrer">Open 2-1-1 OC</a>
+          </div>
+        </div>
+        <div class="status-grid" aria-label="Platform summary">
+          <div class="stat"><b id="totalResources">0</b><span>local starting points</span></div>
+          <div class="stat"><b>2</b><span>main search modes</span></div>
+          <div class="stat"><b>B/W</b><span>monochrome UI system</span></div>
+          <div class="stat"><b>24/7</b><span>self-guided access</span></div>
+        </div>
+      </div>
+
+      <aside class="terminal" aria-label="System status panel">
+        <div class="terminal-line"><span class="prompt">C:\OC_NAV&gt;</span> boot platform</div>
+        <div class="terminal-line dim">loading: job search... ok</div>
+        <div class="terminal-line dim">loading: training paths... ok</div>
+        <div class="terminal-line dim">loading: social services... ok</div>
+        <div class="terminal-line dim">style: black background / white text / Consolas</div>
+        <br />
+        <div class="terminal-line"><span class="prompt">C:\OC_NAV&gt;</span> priority</div>
+        <div class="terminal-line dim">1. Find work or training.</div>
+        <div class="terminal-line dim">2. Stabilize food, housing, health, legal, youth, and basic needs.</div>
+        <div class="terminal-line dim">3. Build a next-step plan you can actually use.</div>
+        <br />
+        <div class="terminal-line"><span class="prompt">C:\OC_NAV&gt;</span> ready_</div>
+      </aside>
+    </section>
+
+    <section class="panel" id="navigator" aria-labelledby="navigatorTitle">
+      <div class="eyebrow">Navigator</div>
+      <h2 id="navigatorTitle">Search jobs, training, and social services</h2>
+
+      <div class="search-shell" role="search">
+        <div>
+          <label for="keywordInput">Keyword</label>
+          <input id="keywordInput" type="search" placeholder="resume, warehouse, EBT, housing, legal, youth..." autocomplete="off" />
+        </div>
+        <div>
+          <label for="cityInput">City</label>
+          <select id="cityInput">
+            <option value="">Any OC city</option>
+          </select>
+        </div>
+        <div>
+          <label for="urgencyInput">Urgency</label>
+          <select id="urgencyInput">
+            <option value="">Any</option>
+            <option value="today">Need help today</option>
+            <option value="week">This week</option>
+            <option value="plan">Planning ahead</option>
+          </select>
+        </div>
+        <button id="quickSearchBtn" type="button">Search</button>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Resource category">
+        <button class="tab" type="button" role="tab" aria-selected="true" data-mode="jobs">Jobs + Training</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" data-mode="services">Social Services</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" data-mode="all">All Resources</button>
+      </div>
+
+      <div class="workspace">
+        <aside class="panel filters" aria-label="Search filters">
+          <h2>Filters</h2>
+          <div class="field">
+            <label for="goalInput">Primary goal</label>
+            <select id="goalInput">
+              <option value="">Show all goals</option>
+              <option value="first-job">First job / entry level</option>
+              <option value="better-job">Better job / higher pay</option>
+              <option value="training">Training / certificate</option>
+              <option value="resume">Resume / applications</option>
+              <option value="youth">Youth / young adult</option>
+              <option value="food">Food / EBT</option>
+              <option value="housing">Housing / shelter</option>
+              <option value="health">Health / mental health</option>
+              <option value="legal">Legal / tenant / immigration</option>
+              <option value="transport">Transportation barrier</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="barrierInput">Barrier to account for</label>
+            <select id="barrierInput">
+              <option value="">No specific barrier</option>
+              <option value="no-car">No car</option>
+              <option value="no-computer">No computer / internet</option>
+              <option value="kids">Childcare / kids at home</option>
+              <option value="documents">Need documents / ID help</option>
+              <option value="language">Language support</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="storyInput">Situation notes</label>
+            <textarea id="storyInput" placeholder="Example: Santa Ana, no car, need entry-level work and food support this week."></textarea>
+          </div>
+          <div class="mini-actions">
+            <button type="button" id="applyBtn">Apply</button>
+            <button type="button" id="resetBtn" class="nav-btn secondary">Reset</button>
+          </div>
+          <div class="chip-row" aria-label="Common quick filters">
+            <button type="button" class="chip quick" data-goal="resume">resume help</button>
+            <button type="button" class="chip quick" data-goal="training">training</button>
+            <button type="button" class="chip quick" data-goal="food">food</button>
+            <button type="button" class="chip quick" data-goal="housing">housing</button>
+          </div>
+        </aside>
+
+        <section class="results" aria-live="polite">
+          <div class="results-header">
+            <div>
+              <h2 id="resultsTitle">Recommended resources</h2>
+              <p id="resultSummary">Use the filters to narrow the list.</p>
+            </div>
+            <button type="button" class="nav-btn secondary" id="copyPlanBtn">Copy plan</button>
+          </div>
+          <div id="cards" class="cards"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="planner" id="planner" aria-label="Action plan tools">
+      <div class="panel checklist">
+        <div class="eyebrow">Action plan</div>
+        <h2>Next 48 hours</h2>
+        <label><input type="checkbox" /> Save 3 job or service links from the result cards.</label>
+        <label><input type="checkbox" /> Call or contact the top resource and ask about eligibility.</label>
+        <label><input type="checkbox" /> Gather ID, proof of address, resume, or benefit documents.</label>
+        <label><input type="checkbox" /> Visit a library or One-Stop center if you need computer access.</label>
+        <label><input type="checkbox" /> Write down one appointment, deadline, or follow-up date.</label>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">Safety note</div>
+        <h2>Immediate help</h2>
+        <div class="note-box">
+          This is a resource navigator, not emergency support. For emergencies call 911. For mental health crisis support call or text 988. For broad local referrals in Orange County, start with 2-1-1 OC.
+        </div>
+        <br />
+        <div class="note-box" id="generatedPlan">
+          Your generated plan will appear after you search or copy a plan.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Prototype for public-resource navigation. Links can change; always verify eligibility, hours, and location directly with the organization. Built from the original Orange County Life Navigator concept, with the visual system simplified into a black-and-white terminal interface focused on job search and social services.
+  </footer>
+
+  <script>
+    const cities = [
+      "Santa Ana", "Anaheim", "Garden Grove", "Fullerton", "Orange", "La Habra", "Westminster", "Buena Park", "Irvine", "Costa Mesa", "Huntington Beach", "Tustin", "Newport Beach", "Mission Viejo", "Other / Nearby"
+    ];
+
+    const resources = [
+      {
+        category: "jobs",
+        title: "OC Workforce Solutions / One-Stop Centers",
+        tags: ["Jobs", "Training", "Resume"],
+        cities: cities,
+        goals: ["first-job", "better-job", "training", "resume", "youth", "transport"],
+        barriers: ["no-car", "no-computer", "documents", "language"],
+        urgency: ["today", "week", "plan"],
+        meta: "Career centers for job search, training referrals, resume support, interview prep, and employment services.",
+        details: "Best first stop if you need a human navigator, career counselor, job postings, or help choosing a training path.",
+        steps: "Next step: contact the nearest center and ask for an intake appointment or walk-in options.",
+        url: "https://www.ocworkforcesolutions.com"
+      },
+      {
+        category: "jobs",
+        title: "CalJOBS",
+        tags: ["Job board", "State", "Applications"],
+        cities: cities,
+        goals: ["first-job", "better-job", "resume"],
+        barriers: ["no-computer", "language"],
+        urgency: ["today", "week", "plan"],
+        meta: "California's job-search and workforce platform for openings, resumes, and career tools.",
+        details: "Useful for entry-level, part-time, public sector, and training-connected opportunities.",
+        steps: "Next step: create or update a profile, then search by city, distance, and desired wage.",
+        url: "https://www.caljobs.ca.gov"
+      },
+      {
+        category: "jobs",
+        title: "OC Public Libraries: Computer + Job Help",
+        tags: ["Computer access", "Resume", "Library"],
+        cities: ["Garden Grove", "La Habra", "Westminster", "Buena Park", "Costa Mesa", "Tustin", "Irvine", "Other / Nearby"],
+        goals: ["resume", "first-job", "training", "transport"],
+        barriers: ["no-computer", "no-car", "language"],
+        urgency: ["today", "week"],
+        meta: "Library branches can provide public computers, internet access, printing, and local learning resources.",
+        details: "Good when the real barrier is access to a device, printer, quiet space, or basic digital support.",
+        steps: "Next step: check the closest branch hours before going, especially for printing or appointment-based help.",
+        url: "https://ocpl.org"
+      },
+      {
+        category: "jobs",
+        title: "California Community Colleges Career Education",
+        tags: ["Certificates", "Trades", "Skills"],
+        cities: cities,
+        goals: ["training", "better-job"],
+        barriers: ["kids", "transport", "language"],
+        urgency: ["week", "plan"],
+        meta: "Explore short-term career education in healthcare, IT, skilled trades, logistics, business, and more.",
+        details: "Useful when you want a higher-paying path but need a practical program, not a four-year restart.",
+        steps: "Next step: pick one field and compare nearby certificate length, cost, and job placement support.",
+        url: "https://www.cccco.edu/students-and-parents/explore-career-education"
+      },
+      {
+        category: "jobs",
+        title: "Youth Employment Programs - OC Workforce Solutions",
+        tags: ["Youth", "Internships", "Paid experience"],
+        cities: ["Santa Ana", "Anaheim", "Garden Grove", "Fullerton", "Orange", "Other / Nearby"],
+        goals: ["youth", "first-job", "resume", "training"],
+        barriers: ["no-car", "documents", "language"],
+        urgency: ["week", "plan"],
+        meta: "Programs for teens and young adults that may include job readiness, internships, and paid work experience.",
+        details: "Best match for first-job confidence, basic workplace skills, and supported applications.",
+        steps: "Next step: ask about age range, eligibility, required documents, and next cohort dates.",
+        url: "https://www.ocworkforcesolutions.com/youth"
+      },
+      {
+        category: "jobs",
+        title: "America's Job Center of California Locator",
+        tags: ["Career center", "Nearby", "Counseling"],
+        cities: cities,
+        goals: ["first-job", "better-job", "training", "resume"],
+        barriers: ["no-car", "no-computer", "language"],
+        urgency: ["today", "week", "plan"],
+        meta: "Find nearby workforce offices if you are outside one city or need an in-person location.",
+        details: "Useful if you move between OC cities or want the closest appointment-based career center.",
+        steps: "Next step: search by ZIP code, then call to confirm walk-in hours and services.",
+        url: "https://www.careeronestop.org/LocalHelp/AmericanJobCenters/american-job-centers.aspx"
+      },
+      {
+        category: "services",
+        title: "2-1-1 Orange County",
+        tags: ["Live referrals", "Housing", "Food"],
+        cities: cities,
+        goals: ["food", "housing", "health", "legal", "transport", "youth"],
+        barriers: ["no-car", "kids", "documents", "language"],
+        urgency: ["today", "week", "plan"],
+        meta: "Central referral line for shelter, food, utility help, healthcare, transportation, and community programs.",
+        details: "Best first stop when you are not sure which agency fits your exact situation.",
+        steps: "Next step: call 2-1-1 or use the website and describe city, household size, urgency, and barriers.",
+        url: "https://www.211oc.org"
+      },
+      {
+        category: "services",
+        title: "BenefitsCal / CalFresh Food Assistance",
+        tags: ["Food", "EBT", "Benefits"],
+        cities: cities,
+        goals: ["food"],
+        barriers: ["kids", "documents", "language", "no-computer"],
+        urgency: ["today", "week", "plan"],
+        meta: "Apply for CalFresh, Medi-Cal, CalWORKs, and other California benefits through one portal.",
+        details: "Strong match if food is the immediate problem or your income changed recently.",
+        steps: "Next step: start an application and collect ID, income info, rent, utilities, and household details.",
+        url: "https://benefitscal.com"
+      },
+      {
+        category: "services",
+        title: "OC Health Care Agency Behavioral Health",
+        tags: ["Health", "Mental health", "County"],
+        cities: cities,
+        goals: ["health"],
+        barriers: ["language", "transport"],
+        urgency: ["today", "week", "plan"],
+        meta: "County behavioral health access points, mental health resources, and substance use support.",
+        details: "Use for non-emergency mental health support, referrals, and county-level care navigation.",
+        steps: "Next step: call the listed access line or use 988 for immediate crisis support.",
+        url: "https://www.ochealthinfo.com"
+      },
+      {
+        category: "services",
+        title: "Community Legal Aid SoCal",
+        tags: ["Legal", "Tenant", "Benefits"],
+        cities: cities,
+        goals: ["legal", "housing"],
+        barriers: ["documents", "language"],
+        urgency: ["today", "week", "plan"],
+        meta: "Legal help for housing, benefits, domestic violence, consumer issues, and other civil legal needs.",
+        details: "Good fit for eviction notices, benefit denials, tenant questions, debt, or immigration-related referrals.",
+        steps: "Next step: contact intake and have notices, court papers, leases, or letters ready.",
+        url: "https://www.communitylegalsocal.org"
+      },
+      {
+        category: "services",
+        title: "Orange County Housing Authority / Housing Assistance",
+        tags: ["Housing", "Stability", "County"],
+        cities: cities,
+        goals: ["housing"],
+        barriers: ["documents", "kids", "language"],
+        urgency: ["week", "plan"],
+        meta: "County housing assistance information, waitlists, and affordable housing resources.",
+        details: "Useful for longer-term housing planning, vouchers, and affordable-housing navigation.",
+        steps: "Next step: check current waitlist status and document requirements before applying.",
+        url: "https://www.ochousing.org"
+      },
+      {
+        category: "services",
+        title: "Boys & Girls Clubs / OC Youth Centers",
+        tags: ["Youth", "After-school", "Safe spaces"],
+        cities: ["Santa Ana", "Anaheim", "Garden Grove", "Fullerton", "Orange", "Costa Mesa", "Huntington Beach", "Other / Nearby"],
+        goals: ["youth"],
+        barriers: ["kids", "transport"],
+        urgency: ["week", "plan"],
+        meta: "After-school programs, mentorship, homework help, activities, and teen development programs.",
+        details: "Good support when a parent is job searching and needs safe, structured youth programming.",
+        steps: "Next step: search the closest club and ask about enrollment, fees, transportation, and hours.",
+        url: "https://www.bgca.org/get-involved/find-a-club"
+      }
+    ];
+
+    const cityInput = document.getElementById("cityInput");
+    const keywordInput = document.getElementById("keywordInput");
+    const urgencyInput = document.getElementById("urgencyInput");
+    const goalInput = document.getElementById("goalInput");
+    const barrierInput = document.getElementById("barrierInput");
+    const storyInput = document.getElementById("storyInput");
+    const cards = document.getElementById("cards");
+    const resultSummary = document.getElementById("resultSummary");
+    const generatedPlan = document.getElementById("generatedPlan");
+    const totalResources = document.getElementById("totalResources");
+
+    let activeMode = "jobs";
+    totalResources.textContent = resources.length;
+
+    cities.forEach(city => {
+      const option = document.createElement("option");
+      option.value = city;
+      option.textContent = city;
+      cityInput.appendChild(option);
+    });
+
+    function normalize(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function scoreResource(resource, filters) {
+      let score = 0;
+      const haystack = normalize([
+        resource.title,
+        resource.meta,
+        resource.details,
+        resource.tags.join(" "),
+        resource.goals.join(" ")
+      ].join(" "));
+
+      if (filters.mode === "all" || resource.category === filters.mode) score += 5;
+      if (filters.city && resource.cities.includes(filters.city)) score += 3;
+      if (filters.goal && resource.goals.includes(filters.goal)) score += 4;
+      if (filters.barrier && resource.barriers.includes(filters.barrier)) score += 2;
+      if (filters.urgency && resource.urgency.includes(filters.urgency)) score += 2;
+      if (filters.keyword) {
+        const words = filters.keyword.split(/\s+/).filter(Boolean);
+        const matches = words.filter(word => haystack.includes(word)).length;
+        score += matches * 3;
+      }
+      if (filters.story) {
+        const storyWords = normalize(filters.story).split(/\s+/).filter(word => word.length > 3);
+        score += Math.min(4, storyWords.filter(word => haystack.includes(word)).length);
+      }
+      return score;
+    }
+
+    function getFilters() {
+      return {
+        mode: activeMode,
+        keyword: normalize(keywordInput.value),
+        city: cityInput.value,
+        urgency: urgencyInput.value,
+        goal: goalInput.value,
+        barrier: barrierInput.value,
+        story: storyInput.value.trim()
+      };
+    }
+
+    function filterResources() {
+      const filters = getFilters();
+      const filtered = resources
+        .map(resource => ({ ...resource, score: scoreResource(resource, filters) }))
+        .filter(resource => {
+          const modeMatch = filters.mode === "all" || resource.category === filters.mode;
+          const cityMatch = !filters.city || resource.cities.includes(filters.city);
+          const goalMatch = !filters.goal || resource.goals.includes(filters.goal);
+          const barrierMatch = !filters.barrier || resource.barriers.includes(filters.barrier);
+          const urgencyMatch = !filters.urgency || resource.urgency.includes(filters.urgency);
+          const keywordMatch = !filters.keyword || resource.score > (modeMatch ? 5 : 0);
+          return modeMatch && cityMatch && goalMatch && barrierMatch && urgencyMatch && keywordMatch;
+        })
+        .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+
+      renderCards(filtered, filters);
+    }
+
+    function renderCards(matches, filters) {
+      cards.innerHTML = "";
+      const modeLabel = activeMode === "jobs" ? "job and training" : activeMode === "services" ? "social service" : "total";
+      resultSummary.textContent = `${matches.length} ${modeLabel} result${matches.length === 1 ? "" : "s"} found.`;
+
+      if (!matches.length) {
+        cards.innerHTML = `<div class="empty">No direct matches. Try clearing one filter, switching to All Resources, or starting with 2-1-1 OC for a live referral.</div>`;
+        return;
+      }
+
+      matches.forEach((resource, index) => {
+        const article = document.createElement("article");
+        article.className = `result-card ${index === 0 ? "featured" : ""}`;
+        article.innerHTML = `
+          <div class="card-top">
+            <div class="tag-row">${resource.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}</div>
+            <span class="score">match ${Math.min(99, 70 + resource.score)}%</span>
+          </div>
+          <h3>${resource.title}</h3>
+          <div class="meta">${resource.meta}</div>
+          <div class="details">${resource.details}</div>
+          <div class="steps">${resource.steps}</div>
+          <div class="card-actions">
+            <a href="${resource.url}" target="_blank" rel="noopener noreferrer">Open</a>
+            <button type="button" class="outline save-btn" data-title="${resource.title.replace(/"/g, "&quot;")}">Save</button>
+          </div>
+        `;
+        cards.appendChild(article);
+      });
+
+      document.querySelectorAll(".save-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          button.textContent = "Saved";
+          button.setAttribute("aria-pressed", "true");
+          addPlanLine(`Saved resource: ${button.dataset.title}`);
+        });
+      });
+
+      buildPlan(matches[0], filters);
+    }
+
+    function buildPlan(topResource, filters) {
+      if (!topResource) return;
+      const city = filters.city || "your nearest Orange County city";
+      const goalText = goalInput.selectedOptions[0]?.textContent || "your main goal";
+      generatedPlan.innerHTML = `
+        <strong>Suggested plan:</strong><br />
+        1. Start with <strong>${topResource.title}</strong> for ${goalText.toLowerCase()} in ${city}.<br />
+        2. Open the link and confirm eligibility, hours, and required documents.<br />
+        3. Save one backup resource from the list in case the first option is not available.
+      `;
+    }
+
+    function addPlanLine(text) {
+      if (generatedPlan.textContent.includes("Your generated plan")) generatedPlan.innerHTML = "<strong>Saved plan:</strong><br />";
+      generatedPlan.innerHTML += `${text}<br />`;
+    }
+
+    function copyPlan() {
+      const filters = getFilters();
+      const text = generatedPlan.innerText.trim();
+      const backup = `OC Navigator Plan\nMode: ${activeMode}\nCity: ${filters.city || "Any"}\nGoal: ${goalInput.selectedOptions[0]?.textContent || "Any"}\nBarrier: ${barrierInput.selectedOptions[0]?.textContent || "None"}\n\n${text}`;
+      navigator.clipboard?.writeText(backup).then(() => {
+        document.getElementById("copyPlanBtn").textContent = "Copied";
+        setTimeout(() => document.getElementById("copyPlanBtn").textContent = "Copy plan", 1300);
+      }).catch(() => {
+        addPlanLine("Copy not available in this browser. Select this text manually to save it.");
+      });
+    }
+
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", "false"));
+        tab.setAttribute("aria-selected", "true");
+        activeMode = tab.dataset.mode;
+        filterResources();
+      });
+    });
+
+    document.getElementById("quickSearchBtn").addEventListener("click", filterResources);
+    document.getElementById("applyBtn").addEventListener("click", filterResources);
+    document.getElementById("copyPlanBtn").addEventListener("click", copyPlan);
+
+    [keywordInput, cityInput, urgencyInput, goalInput, barrierInput].forEach(input => {
+      input.addEventListener("input", filterResources);
+      input.addEventListener("change", filterResources);
+    });
+
+    document.querySelectorAll(".quick").forEach(chip => {
+      chip.addEventListener("click", () => {
+        goalInput.value = chip.dataset.goal;
+        if (["food", "housing"].includes(chip.dataset.goal)) {
+          activeMode = "services";
+          document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.mode === "services")));
+        }
+        filterResources();
+      });
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      keywordInput.value = "";
+      cityInput.value = "";
+      urgencyInput.value = "";
+      goalInput.value = "";
+      barrierInput.value = "";
+      storyInput.value = "";
+      activeMode = "jobs";
+      document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.mode === "jobs")));
+      filterResources();
+    });
+
+    keywordInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") filterResources();
+    });
+
+    filterResources();
+  </script>
+</body>
+</html>
