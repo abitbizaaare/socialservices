@@ -128,3 +128,5 @@ Nothing is sent to a server — this is all per-browser, per-device state.
 //
    Future expansion ideas for the Orange County navigator include adding a local job-posting forum, monetizing through carefully placed website ads, improving search engine visibility for Orange County job and social service searches, implementing full security hardening, building an API backend for new postings and live updates, tracking ordinance and policy changes, and creating dedicated resource pages for undocumented immigrants, veterans and VA support, ADA/disability services, and other specialized community needs.
 
+}
+whale.html is the original file.
