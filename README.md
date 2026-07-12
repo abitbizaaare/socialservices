@@ -124,3 +124,7 @@ Nothing is sent to a server — this is all per-browser, per-device state.
 4. Add a real map integration for the Services Directory.
 5. Wire up a real job-postings API (e.g. CalJOBS) for the Jobs Board.
 6. Expand translations to resource content, not just UI chrome.
+
+//
+   Future expansion ideas for the Orange County navigator include adding a local job-posting forum, monetizing through carefully placed website ads, improving search engine visibility for Orange County job and social service searches, implementing full security hardening, building an API backend for new postings and live updates, tracking ordinance and policy changes, and creating dedicated resource pages for undocumented immigrants, veterans and VA support, ADA/disability services, and other specialized community needs.
+
